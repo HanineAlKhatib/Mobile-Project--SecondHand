@@ -6,19 +6,29 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { firebase } from "@firebase/app";
-import "@firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebaseconfig.js";
 
-const RegistrationScreen = () => {
+const RegistrationScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
+  const [Name, setName] = useState("");
+
+  const [number, setNumber] = useState("");
+
   const [password, setPassword] = useState("");
 
   const handleRegistration = () => {
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then(() => console.log("User registered successfully!"))
+    createUserWithEmailAndPassword(auth, email, password, Name, number)
+      .then(() => {
+        console.log("User registered successfully!");
+        navigation.navigate("Home");
+      })
       .catch((error) => console.error(error));
+  };
+
+  const handlePhoneNumber = (text) => {
+    const formattedText = text.replace(/[^0-9]/g, "").slice(0, 8);
+    setNumber(formattedText);
   };
 
   return (
@@ -38,13 +48,25 @@ const RegistrationScreen = () => {
         value={password}
         onChangeText={setPassword}
       />
+      <TextInput
+        style={styles.input}
+        placeholder="Phone Number"
+        value={number}
+        keyboardType="number-pad"
+        onChangeText={handlePhoneNumber}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Name"
+        value={Name}
+        onChangeText={setName}
+      />
       <TouchableOpacity style={styles.button} onPress={handleRegistration}>
         <Text style={styles.buttonText}>Register</Text>
       </TouchableOpacity>
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

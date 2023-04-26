@@ -7,12 +7,23 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
 
   const handleLogin = () => {
-    // handle login functionality here
+    // Replace this with your actual validation and authentication logic
+    const isValid = email !== "" && password !== "";
+    if (isValid) {
+      navigation.navigate("Home");
+    } else {
+      alert("Please enter valid email and password");
+    }
+  };
+
+  const handleRegistration = () => {
+    console.log("Registration button pressed");
+    navigation.navigate("Register");
   };
 
   return (
@@ -33,6 +44,9 @@ const LoginScreen = () => {
       />
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Login</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={handleRegistration}>
+        <Text style={styles.buttonText}>Register</Text>
       </TouchableOpacity>
     </View>
   );
@@ -66,6 +80,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     alignItems: "center",
     justifyContent: "center",
+    marginBottom: 16,
   },
   buttonText: {
     fontSize: 16,
