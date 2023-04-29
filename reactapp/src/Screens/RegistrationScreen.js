@@ -12,35 +12,51 @@ import { auth } from "../firebaseconfig.js";
 const RegistrationScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [Name, setName] = useState("");
-
   const [number, setNumber] = useState("");
-
   const [password, setPassword] = useState("");
 
   const handleRegistration = () => {
-    createUserWithEmailAndPassword(auth, email, password, Name, number)
-      .then(() => {
-        console.log("User registered successfully!");
-        navigation.navigate("Home");
-      })
-      .catch((error) => console.error(error));
+    const isValid =
+      email !== "" && password !== "" && number !== "" && Name !== "";
+
+    if (!emailVerification(email) ) {
+      // If the email is not valid, show an alert
+      alert("Invalid Email", "Please enter a valid email address");
+      return;
+    } else if(!isValid) {
+      alert("Missing input!");
+
+    }
+    else {
+      console.log("User registered successfully!");
+      navigation.navigate("Home");
+    }
   };
 
+  const emailVerification = (email) => {
+    // Regular expression for email validation
+    const emailPattern = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+
+    // Test if the provided email matches the pattern
+    const isValidEmail = emailPattern.test(email);
+
+    // Return true if the email is valid, false otherwise
+    return isValidEmail;
+  };
   const handlePhoneNumber = (text) => {
     const formattedText = text.replace(/[^0-9]/g, "").slice(0, 8);
     setNumber(formattedText);
   };
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Register</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
-        keyboardType="email-address"
         value={email}
         onChangeText={setEmail}
       />
+
       <TextInput
         style={styles.input}
         placeholder="Password"

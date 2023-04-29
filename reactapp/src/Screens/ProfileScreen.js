@@ -5,9 +5,12 @@ import {
   StyleSheet,
   TouchableOpacity,
   FlatList,
+  Dimensions,
+  Image,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { items } from "./data"; // Import items from data.js
 
+const screenWidth = Dimensions.get("window").width;
 const ProfileScreen = ({ navigation }) => {
   const [user, setUser] = useState({});
   const [userItems, setUserItems] = useState([]);
@@ -17,46 +20,62 @@ const ProfileScreen = ({ navigation }) => {
     getUserItems();
   }, []);
 
-  const getUserData = async () => {
-    try {
-      // Remove this line after integrating actual data
-      const dummyUser = {
-        name: "John Doe",
-        email: "john@example.com",
-        phoneNumber: "+1234567890",
-        password: "password123",
-      };
+  const getUserData = () => {
+    // Replace this with your actual user data
+    const currentUser = {
+      id: 1,
+      name: "John Doe",
+      email: "john@example.com",
+      phoneNumber: "+1234567890",
+      password: "password123",
+    };
 
-      const userData = await AsyncStorage.getItem("user");
-      if (userData !== null) {
-        setUser(JSON.parse(userData));
-      } else {
-        // Remove this line after integrating actual data
-        setUser(dummyUser);
-      }
-    } catch (error) {
-      console.error(error);
-    }
+    setUser(currentUser);
   };
 
-  const getUserItems = async () => {
-    try {
-      const postedItems = await AsyncStorage.getItem("userItems");
-      if (postedItems !== null) {
-        setUserItems(JSON.parse(postedItems));
-      }
-    } catch (error) {
-      console.error(error);
-    }
+  const getUserItems = () => {
+    const currentUserItems = items.filter((item) => item.posterId === user.id);
+    setUserItems(currentUserItems);
   };
 
-  const renderItem = ({ item }) => (
-    <View style={styles.itemContainer}>
-      <Text style={styles.itemName}>{item.name}</Text>
-      <Text style={styles.itemDescription}>{item.description}</Text>
-      <Text style={styles.itemPrice}>${item.price}</Text>
-    </View>
-  );
+  const ItemComponent = ({ item }) => {
+    const editItem = () => {
+      // Handle editing item here
+    };
+
+    const deleteItem = () => {
+      // Filter out the item to delete from userItems state
+      const updatedItems = userItems.filter(
+        (userItem) => userItem.id !== item.id
+      );
+      setUserItems(updatedItems);
+    };
+    return (
+      <View style={styles.itemContainer}>
+        <Image
+          source={{ uri: item.imageUrl }}
+          style={styles.itemImage}
+          resizeMode="cover"
+        />
+        <Text style={styles.itemName}>{item.name}</Text>
+        <Text style={styles.itemDescription}>{item.description}</Text>
+        <Text style={styles.itemPrice}>${item.price}</Text>
+        <Text style={styles.itemPrice}>
+          Poster Number: {item.posterPhoneNumber}
+        </Text>
+        <Text style={styles.itemPrice}>Poster Name: {item.posterName}</Text>
+        <Text style={styles.itemPrice}>Condition: {item.condition}</Text>
+        <View style={styles.buttonsContainer}>
+          <TouchableOpacity style={styles.editButton} onPress={editItem}>
+            <Text style={styles.buttonText}>Edit</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.deleteButton} onPress={deleteItem}>
+            <Text style={styles.buttonText}>Delete</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -67,6 +86,12 @@ const ProfileScreen = ({ navigation }) => {
       >
         <Text style={styles.postItemButtonText}>Post an Item</Text>
       </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.postItemButton}
+        onPress={() => navigation.navigate("Login")}
+      >
+        <Text style={styles.postItemButtonText}>Log Out</Text>
+      </TouchableOpacity>
       <View style={styles.userInfo}>
         <Text>Name: {user.name}</Text>
         <Text>Email: {user.email}</Text>
@@ -76,15 +101,38 @@ const ProfileScreen = ({ navigation }) => {
       <Text style={styles.subTitle}>Your Posted Items:</Text>
       <FlatList
         data={userItems}
-        renderItem={renderItem}
+        renderItem={({ item }) => <ItemComponent item={item} />}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.itemList}
+        numColumns={1}
       />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  buttonsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginTop: 10,
+  },
+  editButton: {
+    backgroundColor: "#4E9FDE",
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    borderRadius: 5,
+  },
+  deleteButton: {
+    backgroundColor: "#F44336",
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 14,
+  },
   subTitle: {
     fontSize: 20,
     fontWeight: "bold",
@@ -152,6 +200,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     color: "#333",
+  },
+  itemImage: {
+    width: screenWidth * 0.9,
+    height: screenWidth * 0.6,
+    borderRadius: 5,
+    marginBottom: 8,
   },
 });
 

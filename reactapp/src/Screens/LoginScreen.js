@@ -11,19 +11,34 @@ const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
 
+  const handleRegistration = () => {
+    console.log("User registered successfully!");
+    navigation.navigate("Register");
+  };
   const handleLogin = () => {
-    // Replace this with your actual validation and authentication logic
     const isValid = email !== "" && password !== "";
-    if (isValid) {
-      navigation.navigate("Home");
+
+    if (!emailVerification(email)) {
+      // If the email is not valid, show an alert
+      alert("Invalid Email", "Please enter a valid email address");
+      return;
+    } else if (!isValid) {
+      alert("Missing input!");
     } else {
-      alert("Please enter valid email and password");
+      console.log("User registered successfully!");
+      navigation.navigate("Home");
     }
   };
 
-  const handleRegistration = () => {
-    console.log("Registration button pressed");
-    navigation.navigate("Register");
+  const emailVerification = (email) => {
+    // Regular expression for email validation
+    const emailPattern = /^[A-Z0-9.]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+
+    // Test if the provided email matches the pattern
+    const isValidEmail = emailPattern.test(email);
+
+    // Return true if the email is valid, false otherwise
+    return isValidEmail;
   };
 
   return (
@@ -76,7 +91,7 @@ const styles = StyleSheet.create({
   button: {
     width: "80%",
     height: 48,
-    backgroundColor: "blue",
+    backgroundColor: "turquoise",
     borderRadius: 6,
     alignItems: "center",
     justifyContent: "center",

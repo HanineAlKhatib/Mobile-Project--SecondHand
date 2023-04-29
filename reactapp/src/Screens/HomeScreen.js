@@ -15,12 +15,12 @@ const ItemComponent = ({ item }) => {
   return (
     <View style={styles.itemContainer}>
       <Image
-        source={item.imageUrl} // Use the imageUrl property as the source
+        source={item.imageUrl}
         style={styles.itemImage}
         resizeMode="cover"
       />
       <Text style={styles.itemName}>{item.name}</Text>
-      <Text style={styles.itemDescription}>{item.description}</Text>
+      <Text style={styles.itemDescription}>{item.category}</Text>
       <Text style={styles.itemPrice}>${item.price}</Text>
       <Text style={styles.itemPrice}>
         Poster Number: {item.posterPhoneNumber}
@@ -82,14 +82,14 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>Welcome to My App!</Text>
-      <Text style={styles.subHeaderText}>Browse and Post Used Items Here</Text>
-      <TouchableOpacity
+      <Text style={styles.headerText}>Welcome to SecondHand!</Text><TouchableOpacity
         style={styles.profileButton}
         onPress={() => navigation.navigate("Profile")}
       >
         <Text style={styles.profileButtonText}>Go to Profile</Text>
       </TouchableOpacity>
+      <Text style={styles.subHeaderText}>Browse Items Here</Text>
+      
       <TextInput
         style={styles.searchInput}
         placeholder="Search items..."
@@ -120,7 +120,7 @@ const HomeScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   profileButton: {
-    backgroundColor: "#4E9FDE",
+    backgroundColor: "turquoise",
     paddingHorizontal: 15,
     paddingVertical: 8,
     borderRadius: 5,
@@ -141,13 +141,13 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "#4E9FDE",
+    color: "turquoise",
     marginBottom: 5,
   },
   subHeaderText: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#4E9FDE",
+    color: "turquoise",
     marginBottom: 20,
   },
   searchInput: {
